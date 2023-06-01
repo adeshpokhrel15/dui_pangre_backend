@@ -61,9 +61,9 @@ location:{
        required: true },
   
  
-  // isreserved:
-  //  { type:Boolean,
-  //    default: false },
+  isreserved:
+   { type:Boolean,
+     default: false },
 
 
 });

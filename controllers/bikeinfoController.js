@@ -54,8 +54,8 @@ const createBikeInfo = asyncHandler(async (req, res) => {
     vehicledetail,
     bikecolor,
     rentprice,
+    isreserved,
     // bikepic
-
 
 
   } = req.body;
@@ -81,8 +81,9 @@ const createBikeInfo = asyncHandler(async (req, res) => {
     !vehicledetail ||
     !bikecolor ||
     !rentprice ||
-    !bikepic
-  ) {
+    !bikepic ||
+    !isreserved
+    ) {
     // console.log(error);
     res.status(400).json({ error: 'Missing required fields' });
     return; // Add this line to exit the function after sending the response
@@ -103,15 +104,14 @@ const createBikeInfo = asyncHandler(async (req, res) => {
     bikecolor,
     rentprice,
     bikepic,
-
+    isreserved
   });
 
   const vehicleId = bikeInfo._id;
 
-  const vehicleRequest = await VehicleRequest.create(
-    // { bikeInfo, }
-    { vehicleId, }
-  );
+  // const vehicleRequest = await VehicleRequest.create(
+  //   { vehicleId, }
+  // );
 
   //  bikeInfo.save();
   res.status(201).json(bikeInfo);
@@ -176,6 +176,19 @@ const updateBikeInfo = asyncHandler(async (req, res) => {
   }
 });
 
+
+const updateReservedStatus = asyncHandler(async (req, res) => {
+  const bikeInfo = await BikeInfo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!bikeInfo) {
+    res.status(404).json({ error: 'Bike info not found' });
+  }
+  else {
+    res.status(200).json(bikeInfo);
+  }
+});
+
+
+
 // delete bike info 
 const deleteBikeInfo = asyncHandler(async (req, res) => {
   const bikeInfo = await BikeInfo.findByIdAndDelete(req.params.id);
@@ -195,7 +208,8 @@ module.exports = {
   getUnsortedBikeInfo,
   getBikeInfoById,
   updateBikeInfo,
-  deleteBikeInfo
+  deleteBikeInfo,
+  updateReservedStatus
 
 };
 

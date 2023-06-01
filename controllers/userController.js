@@ -34,9 +34,9 @@ const uploadImages = async (images) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, firstName, lastName } = req.body;
 
-  if (!username || !email || !password) {
+  if (!username || !email || !password || !firstName || !lastName) {
     res.status(400);
     throw new Error('All fields are mandatory');
   }
@@ -69,12 +69,14 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
     photo_1: imageUrls[0],
     photo_2: imageUrls[1],
+    firstName,
+    lastName,
   });
 
   await newUser.save();
 
   if (newUser) {
-    res.status(201).json({ _id: newUser._id, email: newUser.email, username, photo_1: imageUrls[0], photo_2: imageUrls[1] });
+    res.status(201).json({ _id: newUser._id, email: newUser.email, firstName, lastName, username, photo_1: imageUrls[0], photo_2: imageUrls[1] });
   } else {
     res.status(400);
     throw new Error('User data is not valid');
@@ -97,11 +99,21 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('Invalid email or password');
   }
 
-  const secretKey = 'princejung7'; // Replace with your own secret key for JWT
+   // Replace with your own secret key for JWT
 
-  const token = jwt.sign({ email: user.email, userId: user._id }, secretKey, { expiresIn: '1h' });
+  const token = jwt.sign({ email: user.email, userId: user._id }, process.env.ACCESS_TOKEN_sECRET, { expiresIn: '10h' });
 
   res.json({ message: 'Login successful', email, token });
 });
 
-module.exports = { registerUser, loginUser };
+
+
+// current section
+const currentUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.userId);
+  // console.log(user);
+  res.json({ message: "Current USer information", user: user });
+});
+
+
+module.exports = { registerUser, loginUser, currentUser };

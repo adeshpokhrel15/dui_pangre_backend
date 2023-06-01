@@ -27,6 +27,8 @@ router.get('/:id', getBikeInfoById);
 // Update bike info
 router.put('/:id', updateBikeInfo);
 
+router.patch('/:id', updateBikeInfo);
+
 // Delete bike info
 router.delete('/:id', deleteBikeInfo);
 
